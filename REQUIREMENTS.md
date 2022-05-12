@@ -27,11 +27,29 @@ These are the notes from a meeting with the frontend developer that describe wha
 - price
 - [OPTIONAL] category
 
+Table: products (
+    id: serial primary key,
+    name: varchar,
+    price: bigint,
+    category_id: bigint [foreign key to categories table]
+)
+Table: categories (
+    id: serial primary key,
+    name: varchar(50)
+)
+
 #### User
 - id
 - firstName
 - lastName
 - password
+
+Table: users (
+    id: varchar(50) primary key,
+    first_name: varchar,
+    last_name: varchar,
+    password_digest: varchar
+)
 
 #### Orders
 - id
@@ -40,3 +58,16 @@ These are the notes from a meeting with the frontend developer that describe wha
 - user_id
 - status of order (active or complete)
 
+Table: orders (
+    id: serial primary key,
+    user_id: varchar(50) [foreign key to users table],
+    // status: varchar(8) would be sufficient for
+    // active and complete but not scalable
+    status: varchar(50)
+)
+Table: order_products (
+    id: serial primary key,
+    order_id: bigint [foreign key to orders table],
+    product_id: bigint [foreign key to products table],
+    quantity: integer
+)
