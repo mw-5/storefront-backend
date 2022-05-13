@@ -10,7 +10,9 @@
     "tsc": "tsc",
     "prettier": "prettier --config .prettierrc --write src/**/*.ts",
     "lint": "eslint src/**/*.ts",
-    "checks": "npm run prettier && npm run lint && npm run tsc"
+    "checks": "npm run prettier && npm run lint && npm run tsc",
+    "migrate-dev": "db-migrate --env dev up",
+    "migrate-test": "db-migrate --env test up"
   },
   "author": "Udacity",
   "license": "ISC",
