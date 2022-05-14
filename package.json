@@ -9,7 +9,7 @@
     "test": "set ENV=test&& db-migrate --env test up && jasmine-ts && db-migrate db:drop test",
     "tsc": "tsc",
     "prettier": "prettier --config .prettierrc --write src/**/*.ts",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint src/**/*.ts && eslint spec/tests/**/*.ts",
     "checks": "npm run prettier && npm run lint && npm run tsc",
     "migrate-dev": "db-migrate --env dev up",
     "migrate-test": "db-migrate --env test up"
