@@ -38,4 +38,20 @@ export class ProductStore {
 			throw new Error(`Unable to create product ${p}.\n${err}`);
 		}
 	}
+
+	/**
+	 * @description List all products from the database.
+	 * @returns - The list of products
+	 */
+	async index(): Promise<Product[]> {
+		try {
+			const sql = 'SELECT * FROM products';
+			const conn = await db.connect();
+			const result = await conn.query(sql);
+			conn.release();
+			return result.rows;
+		} catch (err) {
+			throw new Error(`Unable to get list of products.\n${err}`);
+		}
+	}
 }
