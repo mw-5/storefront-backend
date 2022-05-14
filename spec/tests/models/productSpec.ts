@@ -129,4 +129,34 @@ describe('Testsuite ProductStore:', () => {
 			expect(resultProduct).toEqual(expectedProduct);
 		});
 	});
+
+	describe('Test expects method show', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(store.show).toBeDefined();
+		});
+
+		it('to return correct product', async () => {
+			// Arrange
+			const inputProduct = createTestProduct();
+			const expectedProduct = await store.create(inputProduct);
+			const id = expectedProduct.id as string;
+
+			// Act
+			const resultProduct = await store.show(id);
+
+			// Assert
+			expect(resultProduct).toEqual(expectedProduct);
+		});
+
+		it('to throw an error if id is not found', async () => {
+			// Arrange
+			await emptyTestDb();
+
+			// Act & Assert
+			await expectAsync(store.show('1')).toBeRejectedWithError();
+		});
+	});
 });
