@@ -59,3 +59,16 @@ Setup:
 8. To migrate databases for dev and test run:
 	npm run migrate-dev
 	npm run migrate-test
+
+
+
+
+Further notes:
+
+package.json contains a script called test.
+The part:
+	set ENV=test&&
+was taken from this post:
+https://knowledge.udacity.com/questions/662042
+It solves the issue of ENV=test not working with Windows Powershell
+without the need for additional dependencies.
