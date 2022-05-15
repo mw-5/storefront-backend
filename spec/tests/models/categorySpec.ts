@@ -67,4 +67,35 @@ describe('Testsuite CategoryStore:', () => {
 			expect(newCategory).toEqual(inputCategory);
 		});
 	});
+
+	// Read
+	describe('Test expects method index', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(store.index).toBeDefined();
+		});
+
+		it('to return an array', async () => {
+			const list = await store.index();
+			expect(list.length).toBeGreaterThan(0);
+		});
+
+		it('to return categories', async () => {
+			// Arrange
+			const expectedCategory = createTestCategory();
+
+			// Act
+			const list = await store.index();
+			const resultCategory = list[0];
+
+			// Assert
+			// Set id to 0 to compare object
+			// despite serial generaton of id
+			expectedCategory.id = '0';
+			resultCategory.id = '0';
+			expect(resultCategory).toEqual(expectedCategory);
+		});
+	});
 });
