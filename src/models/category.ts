@@ -30,4 +30,20 @@ export class CategoryStore {
 			throw new Error(`Unable to create category ${c}.\n${err}`);
 		}
 	}
+
+	/**
+	 * @description List all categories from the database.
+	 * @returns - The list of categories
+	 */
+	async index(): Promise<Category[]> {
+		try {
+			const sql = 'SELECT * FROM categories';
+			const conn = await db.connect();
+			const result = await conn.query(sql);
+			conn.release();
+			return result.rows;
+		} catch (err) {
+			throw new Error(`Unable to get categories.\n${err}`);
+		}
+	}
 }
