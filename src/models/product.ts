@@ -12,8 +12,8 @@ export type Product = {
 };
 
 /**
- * @description Provides CRUD methods for table products
- * of the database.
+ * @description Provides methods for interacting with
+ * table products of the database.
  */
 export class ProductStore {
 	/**
