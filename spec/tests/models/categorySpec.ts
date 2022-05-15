@@ -98,4 +98,38 @@ describe('Testsuite CategoryStore:', () => {
 			expect(resultCategory).toEqual(expectedCategory);
 		});
 	});
+
+	describe('Test expects method show', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(store.show).toBeDefined();
+		});
+
+		it('to return correct category', async () => {
+			// Arrange
+			const inputCategory = createTestCategory();
+			const expectedCategory = await store.create(inputCategory);
+			const id = expectedCategory.id as string;
+
+			// Act
+			const resultCategory = await store.show(id);
+
+			// Assert
+			expect(resultCategory).toEqual(expectedCategory);
+		});
+
+		it('to throw error for invalid id', async () => {
+			await expectAsync(store.show('a')).toBeRejectedWithError();
+		});
+
+		it('to throw error if id is not found', async () => {
+			// Arrange
+			await emptyTestDb();
+
+			// Act & Assert
+			await expectAsync(store.show('1')).toBeRejectedWithError();
+		});
+	});
 });
