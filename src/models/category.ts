@@ -9,8 +9,8 @@ export type Category = {
 };
 
 /**
- * @description Provides CRUD methods for table
- * categories of the database.
+ * @description Provides methods for interacting with
+ * table categories of the database.
  */
 export class CategoryStore {
 	/**
