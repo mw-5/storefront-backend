@@ -37,13 +37,34 @@ export class CategoryStore {
 	 */
 	async index(): Promise<Category[]> {
 		try {
-			const sql = 'SELECT * FROM categories';
+			const sql = 'SELECT * FROM categories;';
 			const conn = await db.connect();
 			const result = await conn.query(sql);
 			conn.release();
 			return result.rows;
 		} catch (err) {
 			throw new Error(`Unable to get categories.\n${err}`);
+		}
+	}
+
+	/**
+	 * @description Get category for given id.
+	 * @param id - The id of the category
+	 * @returns - The category
+	 */
+	async show(id: string): Promise<Category> {
+		try {
+			const sql = 'SELECT * FROM  categories WHERE id = $1;';
+			const conn = await db.connect();
+			const result = await conn.query(sql, [id]);
+			conn.release();
+			if (result.rowCount > 0) {
+				return result.rows[0];
+			} else {
+				throw new Error();
+			}
+		} catch (err) {
+			throw new Error(`Unable to get category for id ${id}.\n${err}`);
 		}
 	}
 }
