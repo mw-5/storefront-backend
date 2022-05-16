@@ -83,4 +83,20 @@ export class UserStore {
 			throw new Error(`Unable to authenticate user ${id}.\n${err}`);
 		}
 	}
+
+	/**
+	 * @description List all users from the database.
+	 * @returns - The list of users
+	 */
+	async index(): Promise<User[]> {
+		try {
+			const sql = 'SELECT * FROM users;';
+			const conn = await db.connect();
+			const result = await conn.query(sql);
+			conn.release();
+			return result.rows;
+		} catch (err) {
+			throw new Error(`Unable to get users.\n${err}`);
+		}
+	}
 }
