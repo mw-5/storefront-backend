@@ -164,4 +164,35 @@ describe('Testsuite UserStore:', () => {
 			expect(resultUser).toBeNull();
 		});
 	});
+
+	describe('Test method index', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(store.index).toBeDefined();
+		});
+
+		it('to return an array', async () => {
+			const list = await store.index();
+			expect(list.length).toBeGreaterThan(0);
+		});
+
+		it('to return users', async () => {
+			// Arrange
+			const expectedUser = createTestUser();
+
+			// Act
+			const list = await store.index();
+			const resultUser = list[0];
+
+			// Assert
+			// Set password and password_digest equal
+			// between expectation and result because
+			// each is only defined on one object of the two
+			resultUser.password = expectedUser.password;
+			expectedUser.password_digest = resultUser.password_digest;
+			expect(resultUser).toEqual(expectedUser);
+		});
+	});
 });
