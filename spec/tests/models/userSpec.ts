@@ -195,4 +195,37 @@ describe('Testsuite UserStore:', () => {
 			expect(resultUser).toEqual(expectedUser);
 		});
 	});
+
+	describe('Test method show', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(store.show).toBeDefined();
+		});
+
+		it('to return correct user', async () => {
+			// Arrange
+			const expectedUser = createTestUser();
+
+			// Act
+			const resultUser = await store.show(expectedUser.id);
+
+			// Assert
+			// Set password and password_digest equal
+			// between expectation and result because
+			// each is only defined on one object of the two
+			resultUser.password = expectedUser.password;
+			expectedUser.password_digest = resultUser.password_digest;
+			expect(resultUser).toEqual(expectedUser);
+		});
+
+		it('to throw an error if id is not found', async () => {
+			// Arrange
+			await emptyTestDb();
+
+			// Act & Assert
+			expectAsync(store.show(TEST_ID)).toBeRejectedWithError();
+		});
+	});
 });
