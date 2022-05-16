@@ -52,4 +52,35 @@ export class UserStore {
 			throw new Error(`Unable to create user ${u.id}.\n${err}`);
 		}
 	}
+
+	/**
+	 * @description - Authenticate user.
+	 * @param id - The user id
+	 * @param password - The password used for authentication
+	 * @returns - The user if authenticated successfully, otherwise null
+	 */
+	async authenticate(id: string, password: string): Promise<User | null> {
+		try {
+			// Get user
+			const sql = 'SELECT * FROM users WHERE id = $1;';
+			const conn = await db.connect();
+			const result = await conn.query(sql, [id]);
+			conn.release();
+
+			// Check whether user exists to avoid that
+			// user has confused sign on and sign in
+			if (result.rowCount > 0) {
+				const user = result.rows[0];
+				// Check password
+				if (
+					bcrypt.compareSync(password + PEPPER, user.password_digest)
+				) {
+					return user;
+				}
+			}
+			return null;
+		} catch (err) {
+			throw new Error(`Unable to authenticate user ${id}.\n${err}`);
+		}
+	}
 }
