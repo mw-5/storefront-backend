@@ -99,4 +99,25 @@ export class UserStore {
 			throw new Error(`Unable to get users.\n${err}`);
 		}
 	}
+
+	/**
+	 * @description Get user for given id.
+	 * @param id - The id of the user
+	 * @returns - The user
+	 */
+	async show(id: string): Promise<User> {
+		try {
+			const sql = 'SELECT * FROM users WHERE id = $1;';
+			const conn = await db.connect();
+			const result = await conn.query(sql, [id]);
+			conn.release();
+			if (result.rowCount > 0) {
+				return result.rows[0];
+			} else {
+				throw new Error();
+			}
+		} catch (err) {
+			throw new Error(`Unable to find user for id ${id}.\n${err}`);
+		}
+	}
 }
