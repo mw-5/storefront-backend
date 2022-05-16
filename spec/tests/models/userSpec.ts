@@ -122,4 +122,46 @@ describe('Testsuite UserStore:', () => {
 			).toBeRejectedWithError();
 		});
 	});
+
+	describe('Test expects method authenticate', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(store.authenticate).toBeDefined();
+		});
+
+		it('to return user on sucess', async () => {
+			// Act
+			const resultUser = await store.authenticate(
+				TEST_ID,
+				TEST_UNHASHED_PW
+			);
+
+			// Assert
+			expect(resultUser).not.toBeNull();
+		});
+
+		it('to return null for user that does not exist', async () => {
+			// Act
+			const resultUser = await store.authenticate(
+				'nonExistingUser',
+				TEST_UNHASHED_PW
+			);
+
+			// Assert
+			expect(resultUser).toBeNull();
+		});
+
+		it('to return null on wrong password', async () => {
+			// Act
+			const resultUser = await store.authenticate(
+				TEST_ID,
+				'wrongPassword'
+			);
+
+			// Assert
+			expect(resultUser).toBeNull();
+		});
+	});
 });
