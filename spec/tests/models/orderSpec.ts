@@ -1,5 +1,6 @@
 import db from '../../../src/database';
 import { Order, OrderStore } from '../../../src/models/order';
+import { Product } from '../../../src/models/product';
 
 describe('Testsuite OrderStore:', () => {
 	const store = new OrderStore();
@@ -54,6 +55,10 @@ describe('Testsuite OrderStore:', () => {
 		let sql: string;
 		const conn = await db.connect();
 
+		// Empty table order_products
+		sql = 'DELETE FROM order_products;';
+		await conn.query(sql);
+
 		// Empty table products
 		sql = 'DELETE FROM products;';
 		await conn.query(sql);
@@ -74,7 +79,7 @@ describe('Testsuite OrderStore:', () => {
 	};
 
 	/**
-	 * @description Create an order to be used in tests.
+	 * @description Create an order for use in tests.
 	 * @returns - The test order
 	 */
 	const createTestOrder = (): Order => {
@@ -82,6 +87,19 @@ describe('Testsuite OrderStore:', () => {
 			id: TEST_ORDER_ID,
 			user_id: TEST_USER_ID,
 			is_completed: TEST_ORDER_STATUS,
+		};
+	};
+
+	/**
+	 * @description Create a prodcut for use in tests.
+	 * @returns - The test product
+	 */
+	const createTestProduct = (): Product => {
+		return {
+			id: TEST_PRODUCT_ID,
+			name: TEST_PRODUCT_NAME,
+			price: TEST_PRODUCT_PRICE,
+			category_id: TEST_CATEGORY_ID,
 		};
 	};
 
@@ -149,6 +167,38 @@ describe('Testsuite OrderStore:', () => {
 
 		it('to throw error on wrong order id', async () => {
 			await expectAsync(store.complete('-1')).toBeRejectedWithError();
+		});
+	});
+
+	describe('Test expects method addProduct', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(store.addProduct).toBeDefined();
+		});
+
+		it('to add a product to the order', async () => {
+			// Arrange
+			const order = createTestOrder();
+			const product = createTestProduct();
+
+			// Act
+			const entryId = await store.addProduct(order, product, 2);
+
+			// Assert
+			expect(parseInt(entryId)).toBeGreaterThan(0);
+		});
+
+		it('to throw error for invalid quantity', async () => {
+			// Arrange
+			const order = createTestOrder();
+			const product = createTestProduct();
+
+			// Act & Assert
+			await expectAsync(
+				store.addProduct(order, product, 0)
+			).toBeRejectedWithError();
 		});
 	});
 });
