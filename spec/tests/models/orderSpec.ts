@@ -4,7 +4,7 @@ import { Order, OrderStore } from '../../../src/models/order';
 describe('Testsuite OrderStore:', () => {
 	const store = new OrderStore();
 	const TEST_ORDER_ID = '1';
-	const TEST_ORDER_STATUS = 'active';
+	const TEST_ORDER_STATUS = false;
 	const TEST_USER_ID = 'testUsername';
 	const TEST_CATEGORY_ID = '1';
 	const TEST_CATEGORY_NAME = 'testCategory';
@@ -40,7 +40,7 @@ describe('Testsuite OrderStore:', () => {
 
 		// Populate table orders
 		sql =
-			'INSERT INTO orders (id, user_id, status)' +
+			'INSERT INTO orders (id, user_id, is_completed)' +
 			' VALUES ($1, $2, $3);';
 		await conn.query(sql, [TEST_ORDER_ID, TEST_USER_ID, TEST_ORDER_STATUS]);
 
@@ -81,7 +81,7 @@ describe('Testsuite OrderStore:', () => {
 		return {
 			id: TEST_ORDER_ID,
 			user_id: TEST_USER_ID,
-			status: TEST_ORDER_STATUS,
+			is_completed: TEST_ORDER_STATUS,
 		};
 	};
 
@@ -94,9 +94,13 @@ describe('Testsuite OrderStore:', () => {
 			expect(store.create).toBeDefined();
 		});
 
-		it('to create correct order', async () => {
+		it('to create new order', async () => {
 			// Arrange
 			const expectedOrder = createTestOrder();
+			const conn = await db.connect();
+			const sql = 'UPDATE orders SET is_completed = true;';
+			await conn.query(sql);
+			conn.release();
 
 			// Act
 			const resultOrder = await store.create(expectedOrder.user_id);
@@ -106,6 +110,15 @@ describe('Testsuite OrderStore:', () => {
 			// id is unknown beforehand
 			expectedOrder.id = resultOrder.id;
 			expect(resultOrder).toEqual(expectedOrder);
+		});
+
+		it('to return existing active order', async () => {
+			// Act
+			const resultOrder1 = await store.create(TEST_USER_ID);
+			const resultOrder2 = await store.create(TEST_USER_ID);
+
+			// Assert
+			expect(resultOrder1).toEqual(resultOrder2);
 		});
 
 		it('to throw error for unknown user', async () => {
