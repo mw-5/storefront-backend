@@ -122,9 +122,33 @@ describe('Testsuite OrderStore:', () => {
 		});
 
 		it('to throw error for unknown user', async () => {
-			expectAsync(
+			await expectAsync(
 				store.create('nonExistingUserId')
 			).toBeRejectedWithError();
+		});
+	});
+
+	describe('Test expects method complete', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(store.complete).toBeDefined();
+		});
+
+		it('to mark order as completed', async () => {
+			// Arrange
+			const expectedOrder = await store.create(TEST_USER_ID);
+
+			// Act
+			const resultOrder = await store.complete(expectedOrder.id);
+
+			// Assert
+			expect(resultOrder.is_completed).toBeTrue();
+		});
+
+		it('to throw error on wrong order id', async () => {
+			await expectAsync(store.complete('-1')).toBeRejectedWithError();
 		});
 	});
 });
