@@ -1,4 +1,5 @@
 import db from '../database';
+import { Product } from './product';
 
 /**
  * @description Data of table orders.
@@ -70,6 +71,37 @@ export class OrderStore {
 			}
 		} catch (err) {
 			throw new Error(`Unable to update order ${orderId}.\n${err}`);
+		}
+	}
+
+	/**
+	 * @description Add a product to an order.
+	 * @param o - The order
+	 * @param p - The product to be added
+	 * @param quantity - The quantity of product to be added
+	 * @returns - The id of the entry
+	 */
+	async addProduct(o: Order, p: Product, quantity: number): Promise<string> {
+		try {
+			// Validate quantity
+			if (quantity < 1) {
+				throw Error('Quantity must be greater than 0');
+			}
+
+			// Generate entry
+			const sql =
+				'INSERT INTO order_products (order_id, product_id, quantity)' +
+				' VALUES ($1, $2, $3) RETURNING id;';
+			const conn = await db.connect();
+			const result = await conn.query(sql, [o.id, p.id, quantity]);
+			conn.release();
+
+			// Return id of entry
+			return result.rows[0].id;
+		} catch (err) {
+			throw new Error(
+				`Unable to add product ${p.id} to order ${o.id}.\n${err}`
+			);
 		}
 	}
 }
