@@ -48,4 +48,28 @@ export class OrderStore {
 			);
 		}
 	}
+
+	/**
+	 * @description Mark order as complete.
+	 * @param orderId - The id of the order
+	 * @returns - The updated order from the database
+	 */
+	async complete(orderId: string): Promise<Order> {
+		try {
+			const sql =
+				'UPDATE orders SET is_completed = TRUE' +
+				' WHERE id = $1 RETURNING *;';
+			const conn = await db.connect();
+			const result = await conn.query(sql, [orderId]);
+			conn.release();
+			// Check if update succeeded
+			if (result.rowCount > 0) {
+				return result.rows[0];
+			} else {
+				throw new Error();
+			}
+		} catch (err) {
+			throw new Error(`Unable to update order ${orderId}.\n${err}`);
+		}
+	}
 }
