@@ -61,9 +61,7 @@ Table: users (
 Table: orders (
     id: serial primary key,
     user_id: varchar(50) [foreign key to users table],
-    // status: varchar(8) would be sufficient for
-    // active and complete but not scalable
-    status: varchar(50)
+    is_completed: boolean not null
 )
 Table: order_products (
     id: serial primary key,
