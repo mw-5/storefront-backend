@@ -225,7 +225,7 @@ describe('Testsuite UserStore:', () => {
 			await emptyTestDb();
 
 			// Act & Assert
-			expectAsync(store.show(TEST_ID)).toBeRejectedWithError();
+			await expectAsync(store.show(TEST_ID)).toBeRejectedWithError();
 		});
 	});
 });
