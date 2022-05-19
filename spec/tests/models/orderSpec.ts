@@ -85,8 +85,9 @@ describe('Testsuite OrderStore:', () => {
 	const createTestOrder = (): Order => {
 		return {
 			id: TEST_ORDER_ID,
-			user_id: TEST_USER_ID,
+			products: [],
 			is_completed: TEST_ORDER_STATUS,
+			user_id: TEST_USER_ID,
 		};
 	};
 
@@ -184,7 +185,11 @@ describe('Testsuite OrderStore:', () => {
 			const product = createTestProduct();
 
 			// Act
-			const entryId = await store.addProduct(order, product, 2);
+			const entryId = await store.addProduct(
+				order.id,
+				<string>product.id,
+				2
+			);
 
 			// Assert
 			expect(parseInt(entryId)).toBeGreaterThan(0);
@@ -197,7 +202,7 @@ describe('Testsuite OrderStore:', () => {
 
 			// Act & Assert
 			await expectAsync(
-				store.addProduct(order, product, 0)
+				store.addProduct(order.id, <string>product.id, 0)
 			).toBeRejectedWithError();
 		});
 	});
