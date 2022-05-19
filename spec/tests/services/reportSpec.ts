@@ -1,6 +1,6 @@
 import db from '../../../src/database';
 import { ReportQueries } from '../../../src/services/report';
-import { Order } from '../../../src/models/order';
+import { Order, OrderStore } from '../../../src/models/order';
 
 describe('Testsuite ReportQueries', () => {
 	const queries = new ReportQueries();
@@ -140,6 +140,38 @@ describe('Testsuite ReportQueries', () => {
 			// Act & Assert
 			await expectAsync(
 				queries.currentOrderByUser('notExistingUser')
+			).toBeRejectedWithError();
+		});
+	});
+
+	describe('Test expects method completedOrdersByUser', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(queries.completedOrdersByUser).toBeDefined();
+		});
+
+		it('to return completed orders', async () => {
+			// Arrange
+			const store = new OrderStore();
+			store.complete(TEST_ORDER_ID);
+
+			// Act
+			const resultOrders = await queries.completedOrdersByUser(
+				TEST_USER_ID
+			);
+
+			// Assert
+			resultOrders.forEach((resultOrder) => {
+				expect(resultOrder.is_completed).toBeTrue();
+			});
+		});
+
+		it('to throw error for missing completed orders', async () => {
+			// Act & Assert
+			await expectAsync(
+				queries.completedOrdersByUser('notExistingUser')
 			).toBeRejectedWithError();
 		});
 	});
