@@ -1,11 +1,14 @@
 import db from '../database';
-import { Product } from './product';
 
 /**
  * @description Data of table orders.
  */
 export type Order = {
 	id: string;
+	products: {
+		id: string;
+		quantity: number;
+	}[];
 	user_id: string;
 	is_completed: boolean;
 };
@@ -39,9 +42,15 @@ export class OrderStore {
 				sql =
 					'INSERT INTO orders (user_id, is_completed)' +
 					' VALUES ($1, FALSE) RETURNING *;';
-				const newOrder = await conn.query(sql, [userId]);
+				const result = await conn.query(sql, [userId]);
+				const newOrder = result.rows[0];
 				conn.release();
-				return newOrder.rows[0];
+				return {
+					id: newOrder.id,
+					products: [],
+					user_id: newOrder.user_id,
+					is_completed: newOrder.is_completed,
+				};
 			}
 		} catch (err) {
 			throw new Error(
@@ -76,12 +85,16 @@ export class OrderStore {
 
 	/**
 	 * @description Add a product to an order.
-	 * @param o - The order
-	 * @param p - The product to be added
+	 * @param oid - The id of the order
+	 * @param pid - The id of the product to be added
 	 * @param quantity - The quantity of product to be added
 	 * @returns - The id of the entry
 	 */
-	async addProduct(o: Order, p: Product, quantity: number): Promise<string> {
+	async addProduct(
+		oid: string,
+		pid: string,
+		quantity: number
+	): Promise<string> {
 		try {
 			// Validate quantity
 			if (quantity < 1) {
@@ -93,14 +106,14 @@ export class OrderStore {
 				'INSERT INTO order_products (order_id, product_id, quantity)' +
 				' VALUES ($1, $2, $3) RETURNING id;';
 			const conn = await db.connect();
-			const result = await conn.query(sql, [o.id, p.id, quantity]);
+			const result = await conn.query(sql, [oid, pid, quantity]);
 			conn.release();
 
 			// Return id of entry
 			return result.rows[0].id;
 		} catch (err) {
 			throw new Error(
-				`Unable to add product ${p.id} to order ${o.id}.\n${err}`
+				`Unable to add product ${pid} to order ${oid}.\n${err}`
 			);
 		}
 	}
