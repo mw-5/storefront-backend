@@ -131,4 +131,25 @@ export class ReportQueries {
 			);
 		}
 	}
+
+	/**
+	 * @description Get the top five most popular products.
+	 * @returns - An array of five most popular products
+	 */
+	async topFiveProducts(): Promise<
+		{ product_id: string; sum_quantity: number }[]
+	> {
+		try {
+			const sql =
+				'SELECT product_id, sum(quantity) AS sum_quantity' +
+				' FROM order_products GROUP BY product_id' +
+				' ORDER BY sum_quantity DESC LIMIT 5;';
+			const conn = await db.connect();
+			const result = await conn.query(sql);
+			conn.release();
+			return result.rows;
+		} catch (err) {
+			throw new Error(`Unable to get top five products ${err}`);
+		}
+	}
 }
