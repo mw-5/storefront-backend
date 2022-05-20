@@ -1,5 +1,6 @@
 import db from '../database';
 import { Order } from '../models/order';
+import { Product } from '../models/product';
 
 export class ReportQueries {
 	/**
@@ -105,6 +106,28 @@ export class ReportQueries {
 		} catch (err) {
 			throw new Error(
 				`Unable to find completed orders for user ${userId}`
+			);
+		}
+	}
+
+	/**
+	 * @description Get all products of the provided category.
+	 * @param categoryId - The id of the category
+	 * @returns - An array of products
+	 */
+	async productsByCategory(categoryId: string): Promise<Product[]> {
+		try {
+			const sql = 'SELECT * FROM products' + ' WHERE category_id = $1;';
+			const conn = await db.connect();
+			const result = await conn.query(sql, [categoryId]);
+			conn.release();
+			if (result.rowCount === 0) {
+				throw new Error();
+			}
+			return result.rows;
+		} catch (err) {
+			throw new Error(
+				`Unable to get products for category ${categoryId}`
 			);
 		}
 	}
