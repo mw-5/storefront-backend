@@ -175,4 +175,29 @@ describe('Testsuite ReportQueries', () => {
 			).toBeRejectedWithError();
 		});
 	});
+
+	describe('Test expects method productsByCategory', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(queries.productsByCategory).toBeDefined();
+		});
+
+		it('to return an array', async () => {
+			// Act
+			const resultProducts = await queries.productsByCategory(
+				TEST_CATEGORY_ID
+			);
+
+			// Assert
+			expect(resultProducts.length).toBeGreaterThan(0);
+		});
+
+		it('to throw error for invalid category', async () => {
+			await expectAsync(
+				queries.productsByCategory('-1')
+			).toBeRejectedWithError();
+		});
+	});
 });
