@@ -1,6 +1,7 @@
 import db from '../../../src/database';
 import { ReportQueries } from '../../../src/services/report';
 import { Order, OrderStore } from '../../../src/models/order';
+import { ProductStore } from '../../../src/models/product';
 
 describe('Testsuite ReportQueries', () => {
 	const queries = new ReportQueries();
@@ -198,6 +199,46 @@ describe('Testsuite ReportQueries', () => {
 			await expectAsync(
 				queries.productsByCategory('-1')
 			).toBeRejectedWithError();
+		});
+	});
+
+	describe('Test expects method topFiveProducts', () => {
+		beforeEach(populateTestDb);
+		afterEach(emptyTestDb);
+
+		it('to be defined', () => {
+			expect(queries.topFiveProducts).toBeDefined();
+		});
+
+		it('to return an array of five', async () => {
+			// Arrange
+			const p0 = {
+				name: TEST_PRODUCT_NAME,
+				category_id: TEST_CATEGORY_ID,
+				price: TEST_PRODUCT_PRICE,
+			};
+			const productStore = new ProductStore();
+			const orderStore = new OrderStore();
+			// Create products and add them to the cart
+			const p1 = await productStore.create(p0);
+			await orderStore.addProduct(TEST_ORDER_ID, <string>p1.id, 10);
+			const p2 = await productStore.create(p0);
+			await orderStore.addProduct(TEST_ORDER_ID, <string>p2.id, 15);
+			await orderStore.addProduct(TEST_ORDER_ID, <string>p2.id, 15);
+			const p3 = await productStore.create(p0);
+			await orderStore.addProduct(TEST_ORDER_ID, <string>p3.id, 11);
+			const p4 = await productStore.create(p0);
+			await orderStore.addProduct(TEST_ORDER_ID, <string>p4.id, 12);
+			const p5 = await productStore.create(p0);
+			await orderStore.addProduct(TEST_ORDER_ID, <string>p5.id, 20);
+			const p6 = await productStore.create(p0);
+			await orderStore.addProduct(TEST_ORDER_ID, <string>p6.id, 5);
+
+			// Act
+			const result = await queries.topFiveProducts();
+
+			// Assert
+			expect(result.length).toEqual(5);
 		});
 	});
 });
