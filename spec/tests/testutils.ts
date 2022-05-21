@@ -1,12 +1,14 @@
 import db from '../../src/database';
 import { Order } from '../../src/models/order';
 import { User } from '../../src/models/user';
+import { Product } from '../../src/models/product';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 // Table products
+// PostgreSQL BIGINT is represented as string
 export const PRODUCT_ID = '1';
 export const PRODUCT_NAME = 'testProduct';
 export const PRODUCT_PRICE = '100';
@@ -144,5 +146,17 @@ export const createTestUser = (): User => {
 		last_name: USER_LAST_NAME,
 		password: USER_UNHASHED_PW,
 		password_digest: '',
+	};
+};
+
+/**
+ * @description Create a product to be used in tests.
+ * @returns - The test product
+ */
+export const createTestProduct = (): Product => {
+	return {
+		name: PRODUCT_NAME,
+		price: PRODUCT_PRICE,
+		category_id: CATEGORY_ID,
 	};
 };

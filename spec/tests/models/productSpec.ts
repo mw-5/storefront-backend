@@ -1,72 +1,13 @@
-import db from '../../../src/database';
-import { Product, ProductStore } from '../../../src/models/product';
+import { ProductStore } from '../../../src/models/product';
+import * as tu from '../../tests/testutils';
 
 describe('Testsuite ProductStore:', () => {
 	const store = new ProductStore();
-	const TEST_PRODUCT_NAME = 'testProduct';
-	// PostgreSQL BIGINT is represented as string
-	const TEST_PRODUCT_PRICE = '100';
-	const TEST_CATEGORY_ID = '1';
-	const TEST_CATEGORY_NAME = 'testCategory';
-
-	/**
-	 * @description Populate tables products and categories.
-	 */
-	const populateTestDb = async (): Promise<void> => {
-		let sql: string;
-		const conn = await db.connect();
-
-		// Populate table categories
-		sql = 'INSERT INTO categories (id, name) VALUES ($1, $2);';
-		await conn.query(sql, [TEST_CATEGORY_ID, TEST_CATEGORY_NAME]);
-
-		// Populate table products
-		sql =
-			'INSERT INTO products (name, price, category_id)' +
-			' VALUES ($1, $2, $3);';
-		await conn.query(sql, [
-			TEST_PRODUCT_NAME,
-			TEST_PRODUCT_PRICE,
-			TEST_CATEGORY_ID,
-		]);
-
-		conn.release();
-	};
-
-	/**
-	 * @description Empty tables products and categories.
-	 */
-	const emptyTestDb = async (): Promise<void> => {
-		let sql: string;
-		const conn = await db.connect();
-
-		// Empty table products
-		sql = 'DELETE FROM products;';
-		await conn.query(sql);
-
-		// Empty table categories
-		sql = 'DELETE FROM categories;';
-		await conn.query(sql);
-
-		conn.release();
-	};
-
-	/**
-	 * @description Create a product to be used in tests.
-	 * @returns - The test product
-	 */
-	const createTestProduct = (): Product => {
-		return {
-			name: TEST_PRODUCT_NAME,
-			price: TEST_PRODUCT_PRICE,
-			category_id: TEST_CATEGORY_ID,
-		};
-	};
 
 	// Create
 	describe('Test expects method create', () => {
-		beforeEach(populateTestDb);
-		afterEach(emptyTestDb);
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
 
 		it('to be defined', () => {
 			expect(store.create).toBeDefined();
@@ -74,7 +15,7 @@ describe('Testsuite ProductStore:', () => {
 
 		it('to create a product', async () => {
 			// Arrange
-			const inputProduct = createTestProduct();
+			const inputProduct = tu.createTestProduct();
 
 			// Act
 			const newProduct = await store.create(inputProduct);
@@ -89,7 +30,7 @@ describe('Testsuite ProductStore:', () => {
 
 		it('to throw error for invalid category', async () => {
 			// Arrange
-			const invalidProduct = createTestProduct();
+			const invalidProduct = tu.createTestProduct();
 			invalidProduct.category_id = '-1';
 
 			// Act & Assert
@@ -101,8 +42,8 @@ describe('Testsuite ProductStore:', () => {
 
 	// Read
 	describe('Test expects method index', () => {
-		beforeEach(populateTestDb);
-		afterEach(emptyTestDb);
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
 
 		it('to be de defined', () => {
 			expect(store.index).toBeDefined();
@@ -115,7 +56,7 @@ describe('Testsuite ProductStore:', () => {
 
 		it('to return products', async () => {
 			// Arrange
-			const expectedProduct = createTestProduct();
+			const expectedProduct = tu.createTestProduct();
 
 			// Act
 			const list = await store.index();
@@ -131,8 +72,8 @@ describe('Testsuite ProductStore:', () => {
 	});
 
 	describe('Test expects method show', () => {
-		beforeEach(populateTestDb);
-		afterEach(emptyTestDb);
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
 
 		it('to be defined', () => {
 			expect(store.show).toBeDefined();
@@ -140,7 +81,7 @@ describe('Testsuite ProductStore:', () => {
 
 		it('to return correct product', async () => {
 			// Arrange
-			const inputProduct = createTestProduct();
+			const inputProduct = tu.createTestProduct();
 			const expectedProduct = await store.create(inputProduct);
 			const id = expectedProduct.id as string;
 
@@ -153,7 +94,7 @@ describe('Testsuite ProductStore:', () => {
 
 		it('to throw an error if id is not found', async () => {
 			// Arrange
-			await emptyTestDb();
+			await tu.emptyTestDb();
 
 			// Act & Assert
 			await expectAsync(store.show('1')).toBeRejectedWithError();
