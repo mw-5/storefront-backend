@@ -1,52 +1,13 @@
-import db from '../../../src/database';
-import { Category, CategoryStore } from '../../../src/models/category';
+import { CategoryStore } from '../../../src/models/category';
+import * as tu from '../../tests/testutils';
 
 describe('Testsuite CategoryStore:', () => {
 	const store = new CategoryStore();
-	const TEST_ID = '1';
-	const TEST_NAME = 'testCategory';
-
-	/**
-	 * @description Populate tables categories.
-	 */
-	const populateTestDb = async (): Promise<void> => {
-		const conn = await db.connect();
-
-		// Populate table categories
-		const sql = 'INSERT INTO categories (id, name) VALUES ($1, $2);';
-		await conn.query(sql, [TEST_ID, TEST_NAME]);
-
-		conn.release();
-	};
-
-	/**
-	 * @description Empty tables categories.
-	 */
-	const emptyTestDb = async (): Promise<void> => {
-		const conn = await db.connect();
-
-		// Empty table categories
-		const sql = 'DELETE FROM categories;';
-		await conn.query(sql);
-
-		conn.release();
-	};
-
-	/**
-	 * @description Create a category to be used in tests.
-	 * @returns - The test category
-	 */
-	const createTestCategory = (): Category => {
-		return {
-			id: TEST_ID,
-			name: TEST_NAME,
-		};
-	};
 
 	// Create
 	describe('Test expects method create', () => {
-		beforeEach(populateTestDb);
-		afterEach(emptyTestDb);
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
 
 		it('to be defined', () => {
 			expect(store.create).toBeDefined();
@@ -54,7 +15,7 @@ describe('Testsuite CategoryStore:', () => {
 
 		it('to create a category', async () => {
 			// Arrange
-			const inputCategory = createTestCategory();
+			const inputCategory = tu.createTestCategory();
 
 			// Act
 			const newCategory = await store.create(inputCategory);
@@ -70,8 +31,8 @@ describe('Testsuite CategoryStore:', () => {
 
 	// Read
 	describe('Test expects method index', () => {
-		beforeEach(populateTestDb);
-		afterEach(emptyTestDb);
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
 
 		it('to be defined', () => {
 			expect(store.index).toBeDefined();
@@ -84,7 +45,7 @@ describe('Testsuite CategoryStore:', () => {
 
 		it('to return categories', async () => {
 			// Arrange
-			const expectedCategory = createTestCategory();
+			const expectedCategory = tu.createTestCategory();
 
 			// Act
 			const list = await store.index();
@@ -100,8 +61,8 @@ describe('Testsuite CategoryStore:', () => {
 	});
 
 	describe('Test expects method show', () => {
-		beforeEach(populateTestDb);
-		afterEach(emptyTestDb);
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
 
 		it('to be defined', () => {
 			expect(store.show).toBeDefined();
@@ -109,7 +70,7 @@ describe('Testsuite CategoryStore:', () => {
 
 		it('to return correct category', async () => {
 			// Arrange
-			const inputCategory = createTestCategory();
+			const inputCategory = tu.createTestCategory();
 			const expectedCategory = await store.create(inputCategory);
 			const id = expectedCategory.id as string;
 
@@ -126,7 +87,7 @@ describe('Testsuite CategoryStore:', () => {
 
 		it('to throw error if id is not found', async () => {
 			// Arrange
-			await emptyTestDb();
+			await tu.emptyTestDb();
 
 			// Act & Assert
 			await expectAsync(store.show('1')).toBeRejectedWithError();

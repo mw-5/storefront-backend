@@ -2,6 +2,7 @@ import db from '../../src/database';
 import { Order } from '../../src/models/order';
 import { User } from '../../src/models/user';
 import { Product } from '../../src/models/product';
+import { Category } from '../../src/models/category';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 
@@ -158,5 +159,16 @@ export const createTestProduct = (): Product => {
 		name: PRODUCT_NAME,
 		price: PRODUCT_PRICE,
 		category_id: CATEGORY_ID,
+	};
+};
+
+/**
+ * @description Create a category to be used in tests.
+ * @returns - The test category
+ */
+export const createTestCategory = (): Category => {
+	return {
+		id: CATEGORY_ID,
+		name: CATEGORY_NAME,
 	};
 };
