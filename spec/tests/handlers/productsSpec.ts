@@ -1,4 +1,5 @@
 import supertest from 'supertest';
+import { ProductStore } from '../../../src/models/product';
 import app from '../../../src/server';
 import * as tu from '../../tests/testutils';
 
@@ -85,6 +86,44 @@ describe('Testsuite for products routes', () => {
 			expectedProduct.id = '0';
 			resultProduct.id = '0';
 			expect(resultProduct).toEqual(expectedProduct);
+		});
+	});
+
+	describe('Test for endpoint GET products/:id', () => {
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
+
+		it('expects status code 200 on success', async () => {
+			// Act
+			const response = await request.get(`${ROUTE}/${tu.PRODUCT_ID}`);
+
+			// Assert
+			expect(response.statusCode).toEqual(200);
+		});
+
+		it('expects to return correct product', async () => {
+			// Arrange
+			const store = new ProductStore();
+			const expectedProduct = await store.create(tu.createTestProduct());
+
+			// Act
+			const response = await request.get(`${ROUTE}/${tu.PRODUCT_ID}`);
+			const resultProduct = response.body;
+
+			// Assert
+			// Set id to equal compared object
+			// so despite serial generaton of id
+			// objects can be compared
+			expectedProduct.id = resultProduct.id;
+			expect(resultProduct).toEqual(expectedProduct);
+		});
+
+		it('expects status code 400 on invalid input', async () => {
+			// Act
+			const response = await request.get(`${ROUTE}/-1`);
+
+			// Assert
+			expect(response.statusCode).toEqual(400);
 		});
 	});
 });
