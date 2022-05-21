@@ -50,4 +50,41 @@ describe('Testsuite for products routes', () => {
 			expect(response.statusCode).toEqual(400);
 		});
 	});
+
+	describe('Test for endpoint GET products', () => {
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
+
+		it('expects status code 200 on success', async () => {
+			// Act
+			const response = await request.get(ROUTE);
+
+			// Assert
+			expect(response.statusCode).toEqual(200);
+		});
+
+		it('expects an array on success', async () => {
+			// Act
+			const response = await request.get(ROUTE);
+
+			// Assert
+			expect(response.body.length).toBeGreaterThan(0);
+		});
+
+		it('expects to retrieve products', async () => {
+			// Arrange
+			const expectedProduct = tu.createTestProduct();
+
+			// Act
+			const response = await request.get(ROUTE);
+			const resultProduct = response.body[0];
+
+			// Assert
+			// Set id to 0 to compare object
+			// despite serial generaton of id
+			expectedProduct.id = '0';
+			resultProduct.id = '0';
+			expect(resultProduct).toEqual(expectedProduct);
+		});
+	});
 });
