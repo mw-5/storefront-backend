@@ -26,6 +26,16 @@ const create = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+const index = async (_: Request, res: Response): Promise<void> => {
+	try {
+		const products = await store.index();
+		res.json(products);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -34,6 +44,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
  */
 const productRoutes = (app: express.Application): void => {
 	app.post('/products', create);
+	app.get('/products', index);
 };
 
 export default productRoutes;
