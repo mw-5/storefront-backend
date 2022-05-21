@@ -1,74 +1,18 @@
-import db from '../../../src/database';
-import { User, UserStore } from '../../../src/models/user';
+import { UserStore } from '../../../src/models/user';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import * as tu from '../../tests/testutils';
 
 dotenv.config();
 
 describe('Testsuite UserStore:', () => {
 	const store = new UserStore();
-	// Use this id for prepopulated user
-	const TEST_ID = 'testUsername';
 	// Use this id for user created during test
 	const TEST_ID_NEW = 'testNewUsername';
-	const TEST_FIRST_NAME = 'testFirstName';
-	const TEST_LAST_NAME = 'testLastname';
-	const TEST_UNHASHED_PW = 'test123';
-	const SALT_ROUNDS = process.env.SALT_ROUNDS as string;
-	const PEPPER = process.env.BCRYPT_PASSWORD as string;
-
-	/**
-	 * @description Populate users table.
-	 */
-	const populateTestDb = async (): Promise<void> => {
-		const conn = await db.connect();
-
-		const sql =
-			'INSERT INTO users (id, first_name, last_name, password_digest)' +
-			' VALUES ($1, $2, $3, $4);';
-		const hashedPassword = bcrypt.hashSync(
-			TEST_UNHASHED_PW + PEPPER,
-			parseInt(SALT_ROUNDS)
-		);
-		await conn.query(sql, [
-			TEST_ID,
-			TEST_FIRST_NAME,
-			TEST_LAST_NAME,
-			hashedPassword,
-		]);
-
-		conn.release();
-	};
-
-	/**
-	 * @description Empty users table.
-	 */
-	const emptyTestDb = async (): Promise<void> => {
-		const conn = await db.connect();
-
-		const sql = 'DELETE FROM users;';
-		await conn.query(sql);
-
-		conn.release();
-	};
-
-	/**
-	 * @description Create a user for use in tests.
-	 * @returns
-	 */
-	const createTestUser = (): User => {
-		return {
-			id: TEST_ID,
-			first_name: TEST_FIRST_NAME,
-			last_name: TEST_LAST_NAME,
-			password: TEST_UNHASHED_PW,
-			password_digest: '',
-		};
-	};
 
 	describe('Test expects method create', () => {
-		beforeEach(populateTestDb);
-		afterEach(emptyTestDb);
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
 
 		it('to be defined', () => {
 			expect(store.create).toBeDefined();
@@ -76,7 +20,7 @@ describe('Testsuite UserStore:', () => {
 
 		it('to create correct password for new user', async () => {
 			// Arrange
-			const expectedUser = createTestUser();
+			const expectedUser = tu.createTestUser();
 			// Assign this id to avoid conflict with
 			// prepopulated user
 			expectedUser.id = TEST_ID_NEW;
@@ -87,7 +31,7 @@ describe('Testsuite UserStore:', () => {
 			// Assert
 			expect(
 				bcrypt.compareSync(
-					expectedUser.password + PEPPER,
+					expectedUser.password + tu.PEPPER,
 					resultUser.password_digest
 				)
 			).toBeTrue();
@@ -95,7 +39,7 @@ describe('Testsuite UserStore:', () => {
 
 		it('to create correct user', async () => {
 			// Arrange
-			const expectedUser = createTestUser();
+			const expectedUser = tu.createTestUser();
 			// Assign this id to avoid conflict with
 			// prepopulated user
 			expectedUser.id = TEST_ID_NEW;
@@ -114,7 +58,7 @@ describe('Testsuite UserStore:', () => {
 
 		it('to throw error if user already exists', async () => {
 			// Arrange
-			const expectedUser = createTestUser();
+			const expectedUser = tu.createTestUser();
 
 			// Act & Assert
 			await expectAsync(
@@ -124,8 +68,8 @@ describe('Testsuite UserStore:', () => {
 	});
 
 	describe('Test expects method authenticate', () => {
-		beforeEach(populateTestDb);
-		afterEach(emptyTestDb);
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
 
 		it('to be defined', () => {
 			expect(store.authenticate).toBeDefined();
@@ -134,8 +78,8 @@ describe('Testsuite UserStore:', () => {
 		it('to return user on sucess', async () => {
 			// Act
 			const resultUser = await store.authenticate(
-				TEST_ID,
-				TEST_UNHASHED_PW
+				tu.USER_ID,
+				tu.USER_UNHASHED_PW
 			);
 
 			// Assert
@@ -146,7 +90,7 @@ describe('Testsuite UserStore:', () => {
 			// Act
 			const resultUser = await store.authenticate(
 				'nonExistingUser',
-				TEST_UNHASHED_PW
+				tu.USER_UNHASHED_PW
 			);
 
 			// Assert
@@ -156,7 +100,7 @@ describe('Testsuite UserStore:', () => {
 		it('to return null on wrong password', async () => {
 			// Act
 			const resultUser = await store.authenticate(
-				TEST_ID,
+				tu.USER_ID,
 				'wrongPassword'
 			);
 
@@ -166,8 +110,8 @@ describe('Testsuite UserStore:', () => {
 	});
 
 	describe('Test method index', () => {
-		beforeEach(populateTestDb);
-		afterEach(emptyTestDb);
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
 
 		it('to be defined', () => {
 			expect(store.index).toBeDefined();
@@ -180,7 +124,7 @@ describe('Testsuite UserStore:', () => {
 
 		it('to return users', async () => {
 			// Arrange
-			const expectedUser = createTestUser();
+			const expectedUser = tu.createTestUser();
 
 			// Act
 			const list = await store.index();
@@ -197,8 +141,8 @@ describe('Testsuite UserStore:', () => {
 	});
 
 	describe('Test method show', () => {
-		beforeEach(populateTestDb);
-		afterEach(emptyTestDb);
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
 
 		it('to be defined', () => {
 			expect(store.show).toBeDefined();
@@ -206,7 +150,7 @@ describe('Testsuite UserStore:', () => {
 
 		it('to return correct user', async () => {
 			// Arrange
-			const expectedUser = createTestUser();
+			const expectedUser = tu.createTestUser();
 
 			// Act
 			const resultUser = await store.show(expectedUser.id);
@@ -222,10 +166,10 @@ describe('Testsuite UserStore:', () => {
 
 		it('to throw an error if id is not found', async () => {
 			// Arrange
-			await emptyTestDb();
+			await tu.emptyTestDb();
 
 			// Act & Assert
-			await expectAsync(store.show(TEST_ID)).toBeRejectedWithError();
+			await expectAsync(store.show(tu.USER_ID)).toBeRejectedWithError();
 		});
 	});
 });

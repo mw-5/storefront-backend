@@ -1,6 +1,10 @@
 import db from '../../src/database';
 import { Order } from '../../src/models/order';
+import { User } from '../../src/models/user';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Table products
 export const PRODUCT_ID = '1';
@@ -20,9 +24,9 @@ export const ORDER_IS_COMPLETED = false;
 // Tabble order_products
 export const ORDER_PRODUCTS_ID = '1';
 export const ORDER_PRODUCTS_QUANTITY = 20;
-
-const SALT_ROUNDS = process.env.SALT_ROUNDS as string;
-const PEPPER = process.env.BCRYPT_PASSWORD as string;
+// Password hashing
+export const SALT_ROUNDS = process.env.SALT_ROUNDS as string;
+export const PEPPER = process.env.BCRYPT_PASSWORD as string;
 
 /**
  * @description Populate tables of database.
@@ -126,5 +130,19 @@ export const createTestOrder = (): Order => {
 		products: [{ id: PRODUCT_ID, quantity: ORDER_PRODUCTS_QUANTITY }],
 		user_id: USER_ID,
 		is_completed: ORDER_IS_COMPLETED,
+	};
+};
+
+/**
+ * @description Create a user for use in tests.
+ * @returns
+ */
+export const createTestUser = (): User => {
+	return {
+		id: USER_ID,
+		first_name: USER_FIRST_NAME,
+		last_name: USER_LAST_NAME,
+		password: USER_UNHASHED_PW,
+		password_digest: '',
 	};
 };
