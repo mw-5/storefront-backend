@@ -137,6 +137,19 @@ export const createTestOrder = (): Order => {
 };
 
 /**
+ * @description Create an order without products for use in tests.
+ * @returns - The test order
+ */
+export const createEmptyTestOrder = (): Order => {
+	return {
+		id: ORDER_ID,
+		products: [],
+		is_completed: ORDER_IS_COMPLETED,
+		user_id: USER_ID,
+	};
+};
+
+/**
  * @description Create a user for use in tests.
  * @returns
  */
@@ -156,6 +169,7 @@ export const createTestUser = (): User => {
  */
 export const createTestProduct = (): Product => {
 	return {
+		id: PRODUCT_ID,
 		name: PRODUCT_NAME,
 		price: PRODUCT_PRICE,
 		category_id: CATEGORY_ID,
