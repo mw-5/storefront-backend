@@ -27,13 +27,29 @@ const create = async (req: Request, res: Response): Promise<void> => {
 
 /**
  * @description Handle index request for products.
- * @param _ 
+ * @param _
  * @param res - The response to be send
  */
 const index = async (_: Request, res: Response): Promise<void> => {
 	try {
 		const products = await store.index();
 		res.json(products);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
+/**
+ * @description Show product for given id.
+ * @param req - The request received
+ * @param res - The response to be send
+ */
+const show = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const id = req.params.id;
+		const product = await store.show(id);
+		res.json(product);
 	} catch (err) {
 		res.status(400);
 		res.json(err);
@@ -49,6 +65,7 @@ const index = async (_: Request, res: Response): Promise<void> => {
 const productRoutes = (app: express.Application): void => {
 	app.post('/products', create);
 	app.get('/products', index);
+	app.get('/products/:id', show);
 };
 
 export default productRoutes;
