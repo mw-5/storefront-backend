@@ -9,7 +9,6 @@ const store = new ProductStore();
  * @description Handle create request for product.
  * @param req - The incoming request
  * @param res - The response send
- * @returns - The created product
  */
 const create = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -26,6 +25,11 @@ const create = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+/**
+ * @description Handle index request for products.
+ * @param _ 
+ * @param res - The response to be send
+ */
 const index = async (_: Request, res: Response): Promise<void> => {
 	try {
 		const products = await store.index();
