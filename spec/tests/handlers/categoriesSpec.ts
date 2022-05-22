@@ -4,7 +4,7 @@ import * as tu from '../../tests/testutils';
 
 const request = supertest(app);
 
-fdescribe('Testsuite for categories routes', () => {
+describe('Testsuite for categories routes', () => {
 	const ROUTE = '/categories';
 
 	describe('Test for endpoint POST categories', () => {
