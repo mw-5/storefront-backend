@@ -1,4 +1,5 @@
 import supertest from 'supertest';
+import { CategoryStore } from '../../../src/models/category';
 import app from '../../../src/server';
 import * as tu from '../../tests/testutils';
 
@@ -66,6 +67,43 @@ describe('Testsuite for categories routes', () => {
 			expectedCategory.id = '0';
 			resultCategory.id = '0';
 			expect(resultCategory).toEqual(expectedCategory);
+		});
+	});
+
+	fdescribe('Test for endpoint GET categories/:id', () => {
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
+
+		it('expects status code 200 on success', async () => {
+			// Act
+			const response = await request.get(`${ROUTE}/${tu.CATEGORY_ID}`);
+
+			// Assert
+			expect(response.statusCode).toEqual(200);
+		});
+
+		it('expects to retrieve correct category', async () => {
+			// Arrange
+			const store = new CategoryStore();
+			const inputCategory = tu.createTestCategory();
+			const expectedCategory = await store.create(inputCategory);
+
+			// Act
+			const response = await request.get(
+				`${ROUTE}/${expectedCategory.id}`
+			);
+			const resultCategory = response.body;
+
+			// Assert
+			expect(resultCategory).toEqual(expectedCategory);
+		});
+
+		it('expects status code 400 for invalid input', async () => {
+			// Act
+			const response = await request.get(`${ROUTE}/invalidId`);
+
+			// Assert
+			expect(response.statusCode).toEqual(400);
 		});
 	});
 });
