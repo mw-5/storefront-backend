@@ -70,7 +70,7 @@ describe('Testsuite for categories routes', () => {
 		});
 	});
 
-	fdescribe('Test for endpoint GET categories/:id', () => {
+	describe('Test for endpoint GET categories/:id', () => {
 		beforeEach(tu.populateTestDb);
 		afterEach(tu.emptyTestDb);
 
