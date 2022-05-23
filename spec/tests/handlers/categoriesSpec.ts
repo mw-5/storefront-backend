@@ -34,4 +34,38 @@ describe('Testsuite for categories routes', () => {
 			expect(newCategory).toEqual(expectedCategory);
 		});
 	});
+
+	describe('Test for endpoint GET categories', () => {
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
+
+		it('expects status code 200 on success', async () => {
+			const response = await request.get(ROUTE);
+			expect(response.statusCode).toEqual(200);
+		});
+
+		it('expects result to contain array', async () => {
+			// Act
+			const response = await request.get(ROUTE);
+
+			// Assert
+			expect(response.body.length).toBeGreaterThan(0);
+		});
+
+		it('expects to retrieve categories', async () => {
+			// Arrange
+			const expectedCategory = tu.createTestCategory();
+
+			// Act
+			const response = await request.get(ROUTE);
+			const resultCategory = response.body[0];
+
+			// Assert
+			// Set id to 0 to compare object
+			// despite serial generaton of id
+			expectedCategory.id = '0';
+			resultCategory.id = '0';
+			expect(resultCategory).toEqual(expectedCategory);
+		});
+	});
 });
