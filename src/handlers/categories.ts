@@ -39,6 +39,22 @@ const index = async (_: Request, res: Response): Promise<void> => {
 	}
 };
 
+/**
+ * @description Handle show request for categories.
+ * @param req - The incoming request
+ * @param res - The response send
+ */
+const show = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const id = req.params.id;
+		const category = await store.show(id);
+		res.json(category);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -48,6 +64,7 @@ const index = async (_: Request, res: Response): Promise<void> => {
 const categoryRoutes = (app: express.Application): void => {
 	app.post('/categories', create);
 	app.get('/categories', index);
+	app.get('/categories/:id', show);
 };
 
 export default categoryRoutes;
