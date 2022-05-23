@@ -24,6 +24,21 @@ const create = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+/**
+ * @description Handle index request for categories.
+ * @param req - The incoming request
+ * @param res - The response send
+ */
+const index = async (_: Request, res: Response): Promise<void> => {
+	try {
+		const categories = await store.index();
+		res.json(categories);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -32,6 +47,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
  */
 const categoryRoutes = (app: express.Application): void => {
 	app.post('/categories', create);
+	app.get('/categories', index);
 };
 
 export default categoryRoutes;
