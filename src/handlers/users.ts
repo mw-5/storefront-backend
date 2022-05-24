@@ -16,6 +16,7 @@ const store = new UserStore();
  */
 const create = async (req: Request, res: Response): Promise<void> => {
 	try {
+		// Extract user from request
 		const user = {
 			id: req.body.id,
 			first_name: req.body.first_name,
@@ -23,11 +24,17 @@ const create = async (req: Request, res: Response): Promise<void> => {
 			password: req.body.password,
 			password_digest: '',
 		};
+
+		// Create new user
 		const newUser = await store.create(user);
+
+		// Create token for user
 		const token = jwt.sign(
 			{ user: newUser },
 			process.env.SECRET_TOKEN as string
 		);
+
+		// Send token
 		res.json(token);
 	} catch (err) {
 		res.status(400);
