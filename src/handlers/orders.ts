@@ -37,6 +37,29 @@ const complete = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+/**
+ * @description Handle request to add product to order.
+ * @param req - The incoming request
+ * @param res - The response send
+ */
+const addProduct = async (req: Request, res: Response): Promise<void> => {
+	try {
+		// Extract args
+		const orderId = req.params.id;
+		const productId = req.body.product_id;
+		const quantity = req.body.quantity;
+
+		// Add product
+		const entryId = await store.addProduct(orderId, productId, quantity);
+
+		// Send response
+		res.json(entryId);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -46,6 +69,7 @@ const complete = async (req: Request, res: Response): Promise<void> => {
 const orderRoutes = (app: express.Application): void => {
 	app.post('/orders', create);
 	app.put('/orders/:id/complete', complete);
+	app.post('/orders/:id/products', addProduct);
 };
 
 export default orderRoutes;
