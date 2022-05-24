@@ -35,6 +35,37 @@ const create = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+/**
+ * @description Handle authentication of user request.
+ * @param req - The incoming request
+ * @param res - The response send
+ */
+const authenticate = async (req: Request, res: Response): Promise<void> => {
+	try {
+		// Extract arguments from request
+		const userId = req.body.id;
+		const password = req.body.password;
+
+		// Authenticate user
+		const resultUser = await store.authenticate(userId, password);
+		if (resultUser === null) {
+			throw new Error(`User ${userId} is not authorized`);
+		}
+
+		// Create JWT
+		const token = jwt.sign(
+			{ user: resultUser },
+			process.env.SECRET_TOKEN as string
+		);
+
+		// Send response
+		res.json(token);
+	} catch (err) {
+		res.status(401);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -43,6 +74,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
  */
 const userRoutes = (app: express.Application): void => {
 	app.post('/users', create);
+	app.post('/users/login', authenticate);
 };
 
 export default userRoutes;
