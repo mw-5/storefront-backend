@@ -138,4 +138,41 @@ describe('Testsuite for users routes', () => {
 			expect(response.statusCode).toEqual(401);
 		});
 	});
+
+	describe('Test for endpoint GET users', () => {
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
+
+		it('expects status code 200 on success', async () => {
+			const response = await request.get(ROUTE);
+			expect(response.statusCode).toEqual(200);
+		});
+
+		it('expects to return an array', async () => {
+			// Act
+			const response = await request.get(ROUTE);
+			const result = response.body;
+
+			// Assert
+			expect(result.length).toBeGreaterThan(0);
+		});
+
+		it('expects to return users', async () => {
+			// Arrange
+			const expectedUser = tu.createTestUser();
+
+			// Act
+			const response = await request.get(ROUTE);
+			const list = response.body;
+			const resultUser = list[0];
+
+			// Assert
+			// Set password and password_digest equal
+			// between expectation and result because
+			// each is only defined on one object of the two
+			resultUser.password = expectedUser.password;
+			expectedUser.password_digest = resultUser.password_digest;
+			expect(resultUser).toEqual(expectedUser);
+		});
+	});
 });
