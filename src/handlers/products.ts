@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Product, ProductStore } from '../models/product';
+import verifyJwt from '../middleware/authentication';
 
 const store = new ProductStore();
 
@@ -63,7 +64,7 @@ const show = async (req: Request, res: Response): Promise<void> => {
  * @param app - The express application
  */
 const productRoutes = (app: express.Application): void => {
-	app.post('/products', create);
+	app.post('/products', verifyJwt, create);
 	app.get('/products', index);
 	app.get('/products/:id', show);
 };
