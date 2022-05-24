@@ -73,6 +73,21 @@ const authenticate = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+/**
+ * @description Handle index request for users.
+ * @param _
+ * @param res - The response send
+ */
+const index = async (_: Request, res: Response): Promise<void> => {
+	try {
+		const response = await store.index();
+		res.json(response);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -82,6 +97,7 @@ const authenticate = async (req: Request, res: Response): Promise<void> => {
 const userRoutes = (app: express.Application): void => {
 	app.post('/users', create);
 	app.post('/users/login', authenticate);
+	app.get('/users', index);
 };
 
 export default userRoutes;
