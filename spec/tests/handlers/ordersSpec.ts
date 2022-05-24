@@ -112,4 +112,58 @@ describe('Testsuite for orders routes', () => {
 			expect(response.statusCode).toEqual(400);
 		});
 	});
+
+	describe('Test for endpoint POST orders/:id/products', () => {
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
+
+		it('expects status code 200 on success', async () => {
+			// Arrange
+			const product = {
+				productId: tu.PRODUCT_ID,
+				quantity: tu.ORDER_PRODUCTS_QUANTITY,
+			};
+
+			// Act
+			const response = await request
+				.post(`${ROUTE}/${tu.ORDER_ID}/products`)
+				.send(product);
+
+			// Assert
+			expect(response.statusCode).toEqual(200);
+		});
+
+		it('expects to add product to order', async () => {
+			// Arrange
+			const product = {
+				productId: tu.PRODUCT_ID,
+				quantity: tu.ORDER_PRODUCTS_QUANTITY,
+			};
+
+			// Act
+			const response = await request
+				.post(`${ROUTE}/${tu.ORDER_ID}/products`)
+				.send(product);
+			const entryId = response.body;
+
+			// Assert
+			expect(entryId).toBeGreaterThan(0);
+		});
+
+		it('expects status code 400 for invalid quantity', async () => {
+			// Arrange
+			const product = {
+				productId: tu.PRODUCT_ID,
+				quantity: 0,
+			};
+
+			// Act
+			const response = await request
+				.post(`${ROUTE}/${tu.ORDER_ID}/products`)
+				.send(product);
+
+			// Assert
+			expect(response.statusCode).toEqual(400);
+		});
+	});
 });
