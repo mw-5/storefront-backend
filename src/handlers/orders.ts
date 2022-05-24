@@ -21,6 +21,22 @@ const create = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+/**
+ * @description Handle request to mark order as completed.
+ * @param req - The incoming request
+ * @param res - The response send
+ */
+const complete = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const orderId = req.params.id;
+		const order = await store.complete(orderId);
+		res.json(order);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -29,6 +45,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
  */
 const orderRoutes = (app: express.Application): void => {
 	app.post('/orders', create);
+	app.put('/orders/:id/complete', complete);
 };
 
 export default orderRoutes;
