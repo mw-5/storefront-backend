@@ -175,4 +175,39 @@ describe('Testsuite for users routes', () => {
 			expect(resultUser).toEqual(expectedUser);
 		});
 	});
+
+	describe('Test for endpoint GET users/:id', () => {
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
+
+		it('expects status code 200 on success', async () => {
+			const response = await request.get(`${ROUTE}/${tu.USER_ID}`);
+			expect(response.statusCode).toEqual(200);
+		});
+
+		it('expects to recieve correct user', async () => {
+			// Arrange
+			const expectedUser = tu.createTestUser();
+
+			// Act
+			const response = await request.get(`${ROUTE}/${expectedUser.id}`);
+			const resultUser = response.body;
+
+			// Assert
+			// Set password and password_digest equal
+			// between expectation and result because
+			// each is only defined on one object of the two
+			resultUser.password = expectedUser.password;
+			expectedUser.password_digest = resultUser.password_digest;
+			expect(resultUser).toEqual(expectedUser);
+		});
+
+		it('expects status code 400 on invalid input', async () => {
+			// Act
+			const response = request.get(`${ROUTE}/invalidId}`);
+
+			// Assert
+			expect((await response).statusCode).toEqual(400);
+		});
+	});
 });
