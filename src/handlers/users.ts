@@ -80,8 +80,8 @@ const authenticate = async (req: Request, res: Response): Promise<void> => {
  */
 const index = async (_: Request, res: Response): Promise<void> => {
 	try {
-		const response = await store.index();
-		res.json(response);
+		const users = await store.index();
+		res.json(users);
 	} catch (err) {
 		res.status(400);
 		res.json(err);
