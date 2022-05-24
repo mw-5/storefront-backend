@@ -76,4 +76,40 @@ describe('Testsuite for orders routes', () => {
 			expect(response.statusCode).toEqual(400);
 		});
 	});
+
+	describe('Test for endpoint orders/:id/complete', () => {
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
+
+		it('expects status code 200 on success', async () => {
+			// Act
+			const response = await request.put(
+				`${ROUTE}/${tu.ORDER_ID}/complete`
+			);
+
+			// Assert
+			expect(response.statusCode).toEqual(200);
+		});
+
+		it('expects to mark order as completed', async () => {
+			// Act
+			const response = await request.put(
+				`${ROUTE}/${tu.ORDER_ID}/complete`
+			);
+			const resultOrder = response.body;
+
+			// Assert
+			expect(resultOrder.is_completed).toBeTrue();
+		});
+
+		it('exptects status code 400 for invalid order id', async () => {
+			// Act
+			const response = await request.put(
+				`${ROUTE}/invalidOrderId/complete`
+			);
+
+			// Assert
+			expect(response.statusCode).toEqual(400);
+		});
+	});
 });
