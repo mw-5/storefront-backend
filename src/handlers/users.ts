@@ -88,6 +88,22 @@ const index = async (_: Request, res: Response): Promise<void> => {
 	}
 };
 
+/**
+ * @description Handle show user request.
+ * @param req - The incoming request
+ * @param res - The response send
+ */
+const show = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const userId = req.params.id;
+		const user = await store.show(userId);
+		res.json(user);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -98,6 +114,7 @@ const userRoutes = (app: express.Application): void => {
 	app.post('/users', create);
 	app.post('/users/login', authenticate);
 	app.get('/users', index);
+	app.get('/users/:id', show);
 };
 
 export default userRoutes;
