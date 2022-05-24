@@ -7,6 +7,7 @@ const request = supertest(app);
 
 describe('Testsuite for products routes', () => {
 	const ROUTE = '/products';
+	beforeAll(tu.emptyTestDb);
 
 	describe('Test for endpoint POST products', () => {
 		beforeEach(tu.populateTestDb);

@@ -4,6 +4,7 @@ import * as tu from '../../tests/testutils';
 
 describe('Testsuite OrderStore:', () => {
 	const store = new OrderStore();
+	beforeAll(tu.emptyTestDb);
 
 	// Create
 	describe('Test expects method create', () => {

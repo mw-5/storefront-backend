@@ -13,6 +13,7 @@ dotenv.config();
 describe('Testsuite for users routes', () => {
 	const ROUTE = '/users';
 	const TEST_ID_NEW = 'newTestUser';
+	beforeAll(tu.emptyTestDb);
 
 	describe('Test for endpoint POST users', () => {
 		beforeEach(tu.populateTestDb);

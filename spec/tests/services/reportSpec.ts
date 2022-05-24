@@ -5,6 +5,7 @@ import * as tu from '../../tests/testutils';
 
 describe('Testsuite ReportQueries', () => {
 	const queries = new ReportQueries();
+	beforeAll(tu.emptyTestDb);
 
 	describe('Test expects currentOrderByUser', () => {
 		beforeEach(tu.populateTestDb);

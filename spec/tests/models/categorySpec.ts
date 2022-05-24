@@ -3,6 +3,7 @@ import * as tu from '../../tests/testutils';
 
 describe('Testsuite CategoryStore:', () => {
 	const store = new CategoryStore();
+	beforeAll(tu.emptyTestDb);
 
 	// Create
 	describe('Test expects method create', () => {

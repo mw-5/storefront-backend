@@ -7,6 +7,8 @@ import { ProductStore } from '../../../src/models/product';
 const request = supertest(app);
 
 describe('Testsuite for reporting routes', () => {
+	beforeAll(tu.emptyTestDb);
+
 	describe('Test for GET users/:id/current_order', () => {
 		beforeEach(tu.populateTestDb);
 		afterEach(tu.emptyTestDb);

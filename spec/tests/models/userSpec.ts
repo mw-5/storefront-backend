@@ -9,6 +9,7 @@ describe('Testsuite UserStore:', () => {
 	const store = new UserStore();
 	// Use this id for user created during test
 	const TEST_ID_NEW = 'testNewUsername';
+	beforeAll(tu.emptyTestDb);
 
 	describe('Test expects method create', () => {
 		beforeEach(tu.populateTestDb);

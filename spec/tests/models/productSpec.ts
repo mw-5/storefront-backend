@@ -3,6 +3,7 @@ import * as tu from '../../tests/testutils';
 
 describe('Testsuite ProductStore:', () => {
 	const store = new ProductStore();
+	beforeAll(tu.emptyTestDb);
 
 	// Create
 	describe('Test expects method create', () => {

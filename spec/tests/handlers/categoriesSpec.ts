@@ -7,6 +7,7 @@ const request = supertest(app);
 
 describe('Testsuite for categories routes', () => {
 	const ROUTE = '/categories';
+	beforeAll(tu.emptyTestDb);
 
 	describe('Test for endpoint POST categories', () => {
 		beforeEach(tu.populateTestDb);
