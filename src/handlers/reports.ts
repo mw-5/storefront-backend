@@ -43,6 +43,25 @@ const completedOrdersByUser = async (
 	}
 };
 
+/**
+ * @description Handle request for products by category.
+ * @param req - The incoming request
+ * @param res - The response send
+ */
+const productsByCategory = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const categoryId = req.params.id;
+		const categories = await queries.productsByCategory(categoryId);
+		res.json(categories);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -52,6 +71,7 @@ const completedOrdersByUser = async (
 const reportRoutes = (app: express.Application): void => {
 	app.get('/users/:id/current_order', currentOrderByUser);
 	app.get('/users/:id/completed_orders', completedOrdersByUser);
+	app.get('/categories/:id/products', productsByCategory);
 };
 
 export default reportRoutes;
