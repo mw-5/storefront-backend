@@ -5,6 +5,7 @@ import productsRoutes from './handlers/products';
 import categoryRoutes from './handlers/categories';
 import usersRoutes from './handlers/users';
 import ordersRoutes from './handlers/orders';
+import reportsRoutes from './handlers/reports';
 
 const app: express.Application = express();
 const address = '0.0.0.0:3000';
@@ -20,6 +21,7 @@ productsRoutes(app);
 categoryRoutes(app);
 usersRoutes(app);
 ordersRoutes(app);
+reportsRoutes(app);
 
 app.listen(3000, function () {
 	console.log(`starting app on: ${address}`);
