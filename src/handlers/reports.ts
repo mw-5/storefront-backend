@@ -62,6 +62,21 @@ const productsByCategory = async (
 	}
 };
 
+/**
+ * @description Handle request for top five products.
+ * @param _
+ * @param res - The response send
+ */
+const topFiveProducts = async (_: Request, res: Response): Promise<void> => {
+	try {
+		const result = await queries.topFiveProducts();
+		res.json(result);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -72,6 +87,7 @@ const reportRoutes = (app: express.Application): void => {
 	app.get('/users/:id/current_order', currentOrderByUser);
 	app.get('/users/:id/completed_orders', completedOrdersByUser);
 	app.get('/categories/:id/products', productsByCategory);
+	app.get('/top_5_popular_products', topFiveProducts);
 };
 
 export default reportRoutes;
