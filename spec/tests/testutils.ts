@@ -5,6 +5,7 @@ import { Product } from '../../src/models/product';
 import { Category } from '../../src/models/category';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import supertest from 'supertest';
 
 dotenv.config();
 
@@ -187,4 +188,22 @@ export const createTestCategory = (): Category => {
 		id: CATEGORY_ID,
 		name: CATEGORY_NAME,
 	};
+};
+
+/**
+ * @description Login to test endpoint that requires authentication
+ * @param request - The supertest object used for sending requests in tests
+ * @returns - The authorization header containing the JWT
+ */
+export const getAuthHeader = async (
+	request: supertest.SuperTest<supertest.Test>
+): Promise<{ Authorization: string }> => {
+	const user = createTestUser();
+
+	// Authenticate
+	const response = await request.post('/users/login').send(user);
+
+	// Send authorization header containing JWT
+	const token = response.body;
+	return { Authorization: 'Bearer ' + token };
 };
