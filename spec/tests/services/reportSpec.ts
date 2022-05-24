@@ -52,7 +52,7 @@ describe('Testsuite ReportQueries', () => {
 		it('to return completed orders', async () => {
 			// Arrange
 			const store = new OrderStore();
-			store.complete(tu.ORDER_ID);
+			await store.complete(tu.ORDER_ID);
 
 			// Act
 			const resultOrders = await queries.completedOrdersByUser(
