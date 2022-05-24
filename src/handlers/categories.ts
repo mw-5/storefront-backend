@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import verifyJwt from '../middleware/authentication';
 import { CategoryStore } from '../models/category';
 
 const store = new CategoryStore();
@@ -62,7 +63,7 @@ const show = async (req: Request, res: Response): Promise<void> => {
  * @param app - The express application
  */
 const categoryRoutes = (app: express.Application): void => {
-	app.post('/categories', create);
+	app.post('/categories', verifyJwt, create);
 	app.get('/categories', index);
 	app.get('/categories/:id', show);
 };
