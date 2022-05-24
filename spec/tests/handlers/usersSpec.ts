@@ -25,9 +25,13 @@ describe('Testsuite for users routes', () => {
 			// Assign this id to avoid conflict with
 			// prepopulated user
 			inputUser.id = TEST_ID_NEW;
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(inputUser);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(inputUser);
 
 			// Assert
 			expect(response.statusCode).toEqual(200);
@@ -39,9 +43,13 @@ describe('Testsuite for users routes', () => {
 			// Assign this id to avoid conflict with
 			// prepopulated user
 			expectedUser.id = TEST_ID_NEW;
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(expectedUser);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(expectedUser);
 			// Extract created user from response
 			const token = response.body;
 			const payload = <jwt.JwtPayload>(
@@ -64,9 +72,13 @@ describe('Testsuite for users routes', () => {
 			// Assign this id to avoid conflict with
 			// prepopulated user
 			expectedUser.id = TEST_ID_NEW;
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(expectedUser);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(expectedUser);
 			// Extract created user from token
 			const token = response.body;
 			const payload = <jwt.JwtPayload>(
@@ -82,9 +94,13 @@ describe('Testsuite for users routes', () => {
 		it('expects status code 400 if user already exists', async () => {
 			// Arrange
 			const expectedUser = tu.createTestUser();
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(expectedUser);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(expectedUser);
 
 			// Assert
 			expect(response.statusCode).toEqual(400);
@@ -145,13 +161,22 @@ describe('Testsuite for users routes', () => {
 		afterEach(tu.emptyTestDb);
 
 		it('expects status code 200 on success', async () => {
-			const response = await request.get(ROUTE);
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
+			// Act
+			const response = await request.get(ROUTE).set(authHeader);
+
+			// Assert
 			expect(response.statusCode).toEqual(200);
 		});
 
 		it('expects to return an array', async () => {
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
 			// Act
-			const response = await request.get(ROUTE);
+			const response = await request.get(ROUTE).set(authHeader);
 			const result = response.body;
 
 			// Assert
@@ -161,9 +186,10 @@ describe('Testsuite for users routes', () => {
 		it('expects to return users', async () => {
 			// Arrange
 			const expectedUser = tu.createTestUser();
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.get(ROUTE);
+			const response = await request.get(ROUTE).set(authHeader);
 			const list = response.body;
 			const resultUser = list[0];
 
@@ -182,16 +208,27 @@ describe('Testsuite for users routes', () => {
 		afterEach(tu.emptyTestDb);
 
 		it('expects status code 200 on success', async () => {
-			const response = await request.get(`${ROUTE}/${tu.USER_ID}`);
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
+			// Act
+			const response = await request
+				.get(`${ROUTE}/${tu.USER_ID}`)
+				.set(authHeader);
+
+			// Assert
 			expect(response.statusCode).toEqual(200);
 		});
 
 		it('expects to recieve correct user', async () => {
 			// Arrange
 			const expectedUser = tu.createTestUser();
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.get(`${ROUTE}/${expectedUser.id}`);
+			const response = await request
+				.get(`${ROUTE}/${expectedUser.id}`)
+				.set(authHeader);
 			const resultUser = response.body;
 
 			// Assert
@@ -204,8 +241,11 @@ describe('Testsuite for users routes', () => {
 		});
 
 		it('expects status code 400 on invalid input', async () => {
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
 			// Act
-			const response = request.get(`${ROUTE}/invalidId}`);
+			const response = request.get(`${ROUTE}/invalidId}`).set(authHeader);
 
 			// Assert
 			expect((await response).statusCode).toEqual(400);
