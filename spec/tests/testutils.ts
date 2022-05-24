@@ -35,6 +35,8 @@ export const PEPPER = process.env.BCRYPT_PASSWORD as string;
  * @description Populate tables of database.
  */
 export const populateTestDb = async (): Promise<void> => {
+	await emptyTestDb();
+
 	let sql: string;
 	const conn = await db.connect();
 
