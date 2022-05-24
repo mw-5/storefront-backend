@@ -101,4 +101,40 @@ describe('Testsuite for reporting routes', () => {
 			expect(response.statusCode).toEqual(400);
 		});
 	});
+
+	describe('Test for endpoint GET categories/:id/products', () => {
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
+
+		it('expects status code 200 on success', async () => {
+			// Act
+			const response = await request.get(
+				`/categories/${tu.CATEGORY_ID}/products`
+			);
+
+			// Assert
+			expect(response.statusCode).toEqual(200);
+		});
+
+		it('expects to return an array', async () => {
+			// Act
+			const response = await request.get(
+				`/categories/${tu.CATEGORY_ID}/products`
+			);
+			const resultProducts = response.body;
+
+			// Assert
+			expect(resultProducts.length).toBeGreaterThan(0);
+		});
+
+		it('expects status code 400 on invalid category', async () => {
+			// Act
+			const response = await request.get(
+				`/categories/invalidCategory/products`
+			);
+
+			// Assert
+			expect(response.statusCode).toEqual(400);
+		});
+	});
 });
