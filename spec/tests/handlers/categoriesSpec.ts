@@ -14,18 +14,29 @@ describe('Testsuite for categories routes', () => {
 		afterEach(tu.emptyTestDb);
 
 		it('expects status code 200 on success', async () => {
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
+			// Act
 			const response = await request
 				.post(ROUTE)
+				.set(authHeader)
 				.send(tu.createTestCategory());
+
+			// Assert
 			expect(response.statusCode).toEqual(200);
 		});
 
 		it('expects response to contain new category', async () => {
 			// Arrange
 			const expectedCategory = tu.createTestCategory();
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(expectedCategory);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(expectedCategory);
 			const newCategory = response.body;
 
 			// Assert
