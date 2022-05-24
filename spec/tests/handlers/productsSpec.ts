@@ -16,9 +16,13 @@ describe('Testsuite for products routes', () => {
 		it('expects status code 200 on success', async () => {
 			// Arrange
 			const newProduct = tu.createTestProduct();
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(newProduct);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(newProduct);
 
 			// Assert
 			expect(response.statusCode).toEqual(200);
@@ -27,9 +31,13 @@ describe('Testsuite for products routes', () => {
 		it('expects response to contain new product', async () => {
 			// Arrange
 			const expectedProduct = tu.createTestProduct();
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(expectedProduct);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(expectedProduct);
 			const newProduct = response.body;
 
 			// Assert
@@ -44,9 +52,13 @@ describe('Testsuite for products routes', () => {
 			// Arrange
 			const newProduct = tu.createTestProduct();
 			newProduct.category_id = '-1';
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(newProduct);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(newProduct);
 
 			// Assert
 			expect(response.statusCode).toEqual(400);
