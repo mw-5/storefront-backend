@@ -2,8 +2,13 @@ import supertest from 'supertest';
 import app from '../../../src/server';
 import * as tu from '../../tests/testutils';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import { User } from '../../../src/models/user';
 
 const request = supertest(app);
+
+dotenv.config();
 
 describe('Testsuite for users routes', () => {
 	const ROUTE = '/users';
@@ -36,7 +41,12 @@ describe('Testsuite for users routes', () => {
 
 			// Act
 			const response = await request.post(ROUTE).send(expectedUser);
-			const resultUser = response.body;
+			// Extract created user from response
+			const token = response.body;
+			const payload = <jwt.JwtPayload>(
+				jwt.verify(token, process.env.SECRET_TOKEN as string)
+			);
+			const resultUser = payload.user as User;
 
 			// Assert
 			expect(
@@ -56,15 +66,16 @@ describe('Testsuite for users routes', () => {
 
 			// Act
 			const response = await request.post(ROUTE).send(expectedUser);
-			const resultUser = response.body;
+			// Extract created user from token
+			const token = response.body;
+			const payload = <jwt.JwtPayload>(
+				jwt.verify(token, process.env.SECRET_TOKEN as string)
+			);
+			const resultUser = payload.user as User;
 
 			// Assert
 			// For test on password creation see separate test
-			expectedUser.password = '0';
-			expectedUser.password_digest = '0';
-			resultUser.password = '0';
-			resultUser.password_digest = '0';
-			expect(resultUser).toEqual(expectedUser);
+			expect(resultUser.id).toEqual(expectedUser.id);
 		});
 
 		it('expects status code 400 if user already exists', async () => {
