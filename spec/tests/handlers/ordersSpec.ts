@@ -18,9 +18,13 @@ describe('Testsuite for orders routes', () => {
 			const userId = {
 				userId: tu.USER_ID,
 			};
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(userId);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(userId);
 
 			// Assert
 			expect(response.statusCode).toEqual(200);
@@ -36,9 +40,13 @@ describe('Testsuite for orders routes', () => {
 			const userId = {
 				userId: expectedOrder.user_id,
 			};
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(userId);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(userId);
 			const resultOrder = response.body;
 
 			// Assert
@@ -53,28 +61,39 @@ describe('Testsuite for orders routes', () => {
 			const userId = {
 				userId: tu.USER_ID,
 			};
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response1 = await request.post(ROUTE).send(userId);
+			const response1 = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(userId);
 			const resultOrder1 = response1.body;
-			const response2 = await request.post(ROUTE).send(userId);
+			const response2 = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(userId);
 			const resultOrder2 = response2.body;
 
 			// Assert
 			expect(resultOrder1).toEqual(resultOrder2);
 		});
 
-		it('expects status code 400 for unknown user', async () => {
+		it('expects status code 401 for unknown user', async () => {
 			// Arrange
 			const userId = {
 				userId: 'unknownUser',
 			};
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.post(ROUTE).send(userId);
+			const response = await request
+				.post(ROUTE)
+				.set(authHeader)
+				.send(userId);
 
 			// Assert
-			expect(response.statusCode).toEqual(400);
+			expect(response.statusCode).toEqual(401);
 		});
 	});
 
