@@ -207,16 +207,26 @@ describe('Testsuite for orders routes', () => {
 		afterEach(tu.emptyTestDb);
 
 		it('expects status code 200 on success', async () => {
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
 			// Act
-			const response = await request.get(`${ROUTE}/${tu.ORDER_ID}`);
+			const response = await request
+				.get(`${ROUTE}/${tu.ORDER_ID}`)
+				.set(authHeader);
 
 			// Assert
 			expect(response.statusCode).toEqual(200);
 		});
 
 		it('expects to receive order with correct id', async () => {
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
 			// Act
-			const response = await request.get(`${ROUTE}/${tu.ORDER_ID}`);
+			const response = await request
+				.get(`${ROUTE}/${tu.ORDER_ID}`)
+				.set(authHeader);
 			const order = response.body;
 
 			// Assert
@@ -224,8 +234,13 @@ describe('Testsuite for orders routes', () => {
 		});
 
 		it('expects status code 400 for invalid order id', async () => {
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
 			// Act
-			const response = await request.get(`${ROUTE}/invalidOrderId`);
+			const response = await request
+				.get(`${ROUTE}/invalidOrderId`)
+				.set(authHeader);
 
 			// Assert
 			expect(response.statusCode).toEqual(400);
