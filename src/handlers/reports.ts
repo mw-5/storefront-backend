@@ -45,7 +45,18 @@ const completedOrdersByUser = async (
 	res: Response
 ): Promise<void> => {
 	try {
+		// Extract args
 		const userId = req.params.id;
+
+		// Verify user
+		const tokenUserId = verifyUser(<string>req.headers.authorization);
+		if (tokenUserId === null || userId !== tokenUserId) {
+			res.status(401);
+			res.json(`User ${tokenUserId} is unauthorized`);
+			return;
+		}
+
+		// Send orders
 		const orders = await queries.completedOrdersByUser(userId);
 		res.json(orders);
 	} catch (err) {
