@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { ReportQueries } from '../services/report';
+import { verifyUser } from '../utilities/utils';
 
 const queries = new ReportQueries();
 
@@ -15,7 +16,17 @@ const currentOrderByUser = async (
 	res: Response
 ): Promise<void> => {
 	try {
+		// Extract args
 		const userId = req.params.id;
+
+		// Verify user
+		const tokenUserId = verifyUser(<string>req.headers.authorization);
+		if (tokenUserId === null || userId !== tokenUserId) {
+			res.status(401);
+			res.json(`User ${tokenUserId} is unauthorized`);
+			return;
+		}
+
 		const order = await queries.currentOrderByUser(userId);
 		res.json(order);
 	} catch (err) {
