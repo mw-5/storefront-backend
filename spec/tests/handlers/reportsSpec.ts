@@ -79,11 +79,12 @@ describe('Testsuite for reporting routes', () => {
 			// Arrange
 			const store = new OrderStore();
 			await store.complete(tu.ORDER_ID);
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.get(
-				`/users/${tu.USER_ID}/completed_orders`
-			);
+			const response = await request
+				.get(`/users/${tu.USER_ID}/completed_orders`)
+				.set(authHeader);
 
 			// Assert
 			expect(response.statusCode).toEqual(200);
@@ -93,11 +94,12 @@ describe('Testsuite for reporting routes', () => {
 			// Arrange
 			const store = new OrderStore();
 			await store.complete(tu.ORDER_ID);
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.get(
-				`/users/${tu.USER_ID}/completed_orders`
-			);
+			const response = await request
+				.get(`/users/${tu.USER_ID}/completed_orders`)
+				.set(authHeader);
 			const resultOrders = response.body;
 
 			// Assert
@@ -107,10 +109,13 @@ describe('Testsuite for reporting routes', () => {
 		});
 
 		it('expects status code 400 for missing completed orders', async () => {
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
 			// Act
-			const response = await request.get(
-				`/users/notExistingUser/completed_orders`
-			);
+			const response = await request
+				.get(`/users/${tu.USER_ID}/completed_orders`)
+				.set(authHeader);
 
 			// Assert
 			expect(response.statusCode).toEqual(400);
