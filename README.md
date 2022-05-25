@@ -32,6 +32,9 @@ Setup:
 	POSTGRES_USER=yourusername
 	POSTGRES_PASSWORD=yourpassword
 	ENV=dev
+	SALT_ROUNDS=yournumber
+	BCRYPT_PASSWORD=yourbcryptpassword
+	SECRET_TOKEN=yoursecrettoken
 
 5. Create the databases:
 
