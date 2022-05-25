@@ -27,6 +27,7 @@ const currentOrderByUser = async (
 			return;
 		}
 
+		// Send order
 		const order = await queries.currentOrderByUser(userId);
 		res.json(order);
 	} catch (err) {
