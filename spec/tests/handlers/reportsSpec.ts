@@ -14,20 +14,26 @@ describe('Testsuite for reporting routes', () => {
 		afterEach(tu.emptyTestDb);
 
 		it('expects status code 200 on success', async () => {
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
 			// Act
-			const response = await request.get(
-				`/users/${tu.USER_ID}/current_order`
-			);
+			const response = await request
+				.get(`/users/${tu.USER_ID}/current_order`)
+				.set(authHeader);
 
 			// Assert
 			expect(response.statusCode).toEqual(200);
 		});
 
 		it('expects to recieve an active Order', async () => {
+			// Arrange
+			const authHeader = await tu.getAuthHeader(request);
+
 			// Act
-			const response = await request.get(
-				`/users/${tu.USER_ID}/current_order`
-			);
+			const response = await request
+				.get(`/users/${tu.USER_ID}/current_order`)
+				.set(authHeader);
 			const resultOrder = response.body;
 
 			// Assert
@@ -37,11 +43,12 @@ describe('Testsuite for reporting routes', () => {
 		it('expects to receive the correct order', async () => {
 			// Arrange
 			const expectedOrder = tu.createTestOrder();
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
-			const response = await request.get(
-				`/users/${tu.USER_ID}/current_order`
-			);
+			const response = await request
+				.get(`/users/${tu.USER_ID}/current_order`)
+				.set(authHeader);
 			const resultOrder = response.body;
 
 			// Assert
@@ -49,10 +56,15 @@ describe('Testsuite for reporting routes', () => {
 		});
 
 		it('expects status code 400 for missing active order', async () => {
+			// Arrange
+			const store = new OrderStore();
+			store.complete(tu.ORDER_ID);
+			const authHeader = await tu.getAuthHeader(request);
+
 			// Act
-			const response = await request.get(
-				'/users/notExistingUser/current_order'
-			);
+			const response = await request
+				.get(`/users/${tu.USER_ID}/current_order`)
+				.set(authHeader);
 
 			// Assert
 			expect(response.statusCode).toEqual(400);
