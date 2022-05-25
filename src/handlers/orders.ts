@@ -60,6 +60,22 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+/**
+ * @description Handle request to show order.
+ * @param req - The incoming request
+ * @param res - The response send
+ */
+const show = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const orderId = req.params.id;
+		const order = await store.show(orderId);
+		res.json(order);
+	} catch (err) {
+		res.status(400);
+		res.json(err);
+	}
+};
+
 // Endpoints
 
 /**
@@ -70,6 +86,7 @@ const orderRoutes = (app: express.Application): void => {
 	app.post('/orders', create);
 	app.put('/orders/:id/complete', complete);
 	app.post('/orders/:id/products', addProduct);
+	app.get('/orders/:id', show);
 };
 
 export default orderRoutes;
