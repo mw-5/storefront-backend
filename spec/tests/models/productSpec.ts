@@ -28,17 +28,6 @@ describe('Testsuite ProductStore:', () => {
 			inputProduct.id = newProduct.id;
 			expect(newProduct).toEqual(inputProduct);
 		});
-
-		it('to throw error for invalid category', async () => {
-			// Arrange
-			const invalidProduct = tu.createTestProduct();
-			invalidProduct.category_id = '-1';
-
-			// Act & Assert
-			await expectAsync(
-				store.create(invalidProduct)
-			).toBeRejectedWithError();
-		});
 	});
 
 	// Read

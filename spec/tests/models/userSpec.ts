@@ -56,16 +56,6 @@ describe('Testsuite UserStore:', () => {
 			resultUser.password_digest = '0';
 			expect(resultUser).toEqual(expectedUser);
 		});
-
-		it('to throw error if user already exists', async () => {
-			// Arrange
-			const expectedUser = tu.createTestUser();
-
-			// Act & Assert
-			await expectAsync(
-				store.create(expectedUser)
-			).toBeRejectedWithError();
-		});
 	});
 
 	describe('Test expects method authenticate', () => {
