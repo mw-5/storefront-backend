@@ -73,6 +73,15 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
 		const productId = req.body.product_id;
 		const quantity = req.body.quantity;
 
+		// Verify user
+		const order = await store.show(orderId);
+		const tokenUserId = verifyUser(<string>req.headers.authorization);
+		if (tokenUserId === null || tokenUserId !== order.user_id) {
+			res.status(401);
+			res.json(`User ${tokenUserId} is unauthorized`);
+			return;
+		}
+
 		// Add product
 		const entryId = await store.addProduct(orderId, productId, quantity);
 
