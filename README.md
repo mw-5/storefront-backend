@@ -62,6 +62,29 @@ Setup:
 
 
 
+Running the application:
+1. If executed for the first time compile TypeScript by running:
+	npm run tsc
+
+2. Use docker compose to start PostgreSQL.
+	if project folder is working directory run:
+		docker-compose up
+
+3. Start application by running script start:
+	npm run start
+
+
+
+Testing the application:
+1. Use docker compose to start PostgreSQL.
+	if project folder is working directory run:
+		docker-compose up
+
+2. Run tests by executing:
+	npm run test
+
+
+
 
 Further notes:
 
