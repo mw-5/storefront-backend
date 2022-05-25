@@ -152,10 +152,12 @@ describe('Testsuite for orders routes', () => {
 				productId: tu.PRODUCT_ID,
 				quantity: tu.ORDER_PRODUCTS_QUANTITY,
 			};
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
 			const response = await request
 				.post(`${ROUTE}/${tu.ORDER_ID}/products`)
+				.set(authHeader)
 				.send(product);
 
 			// Assert
@@ -168,10 +170,12 @@ describe('Testsuite for orders routes', () => {
 				productId: tu.PRODUCT_ID,
 				quantity: tu.ORDER_PRODUCTS_QUANTITY,
 			};
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
 			const response = await request
 				.post(`${ROUTE}/${tu.ORDER_ID}/products`)
+				.set(authHeader)
 				.send(product);
 			const entryId = response.body;
 
@@ -185,10 +189,12 @@ describe('Testsuite for orders routes', () => {
 				productId: tu.PRODUCT_ID,
 				quantity: 0,
 			};
+			const authHeader = await tu.getAuthHeader(request);
 
 			// Act
 			const response = await request
 				.post(`${ROUTE}/${tu.ORDER_ID}/products`)
+				.set(authHeader)
 				.send(product);
 
 			// Assert
