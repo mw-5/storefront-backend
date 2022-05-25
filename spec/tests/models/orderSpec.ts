@@ -108,4 +108,28 @@ describe('Testsuite OrderStore:', () => {
 			).toBeRejectedWithError();
 		});
 	});
+
+	describe('Test expects method show', () => {
+		beforeEach(tu.populateTestDb);
+		afterEach(tu.emptyTestDb);
+
+		it('to be defined', () => {
+			expect(store.show).toBeDefined();
+		});
+
+		it('to return order with correct id', async () => {
+			// Act
+			const order = await store.show(tu.ORDER_ID);
+
+			// Assert
+			expect(order.id).toEqual(tu.ORDER_ID);
+		});
+
+		it('to throw error for invalid order id', async () => {
+			// Act & Assert
+			await expectAsync(
+				store.show('invalidOrderId')
+			).toBeRejectedWithError();
+		});
+	});
 });
