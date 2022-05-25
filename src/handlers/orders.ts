@@ -100,8 +100,20 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
  */
 const show = async (req: Request, res: Response): Promise<void> => {
 	try {
+		// Extract args
 		const orderId = req.params.id;
+
+		// Get order
 		const order = await store.show(orderId);
+
+		// Verify user
+		const tokenUserId = verifyUser(<string>req.headers.authorization);
+		if (tokenUserId === null || tokenUserId !== order.user_id) {
+			res.status(401);
+			res.json(`User ${tokenUserId} is unauthorized`);
+			return;
+		}
+
 		res.json(order);
 	} catch (err) {
 		res.status(400);
