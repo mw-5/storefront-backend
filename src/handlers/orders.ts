@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { OrderStore } from '../../src/models/order';
+import { verifyUser } from '../utilities/utils';
 
 const store = new OrderStore();
 
@@ -12,7 +13,18 @@ const store = new OrderStore();
  */
 const create = async (req: Request, res: Response): Promise<void> => {
 	try {
+		// Extract request args
 		const userId = req.body.userId;
+
+		// Verify user
+		const tokenUserId = verifyUser(<string>req.headers.authorization);
+		if (tokenUserId === null || userId !== tokenUserId) {
+			res.status(401);
+			res.json(`User ${tokenUserId} is unauthorized`);
+			return;
+		}
+
+		// Create order
 		const order = await store.create(userId);
 		res.json(order);
 	} catch (err) {
