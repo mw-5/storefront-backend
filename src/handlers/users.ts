@@ -112,7 +112,7 @@ const show = async (req: Request, res: Response): Promise<void> => {
  * @param app - The express application
  */
 const userRoutes = (app: express.Application): void => {
-	app.post('/users', verifyJwt, create);
+	app.post('/users', create);
 	app.post('/users/login', authenticate);
 	app.get('/users', verifyJwt, index);
 	app.get('/users/:id', verifyJwt, show);
